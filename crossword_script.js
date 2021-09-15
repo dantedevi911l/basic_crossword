@@ -126,7 +126,7 @@ window.onload = function() {
 
                         // any other selection is invalid
                         if (selected_letters_indices[selected_letters_indices.length - 1][0] == row_num) {
-                            if(selected_letters_indices[selected_letters_indices-1][1]+1 == col_num){
+                            if(selected_letters_indices[selected_letters_indices.length - 1][1]+1 == col_num){
                                 has_selection_started = true;
                                 is_selection_along_row = true;
                                 // push it in the selected letter indices
