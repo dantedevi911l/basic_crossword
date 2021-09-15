@@ -126,22 +126,26 @@ window.onload = function() {
 
                         // any other selection is invalid
                         if (selected_letters_indices[selected_letters_indices.length - 1][0] == row_num) {
-                            has_selection_started = true;
-                            is_selection_along_row = true;
-                            // push it in the selected letter indices
-                            selected_letters_indices.push([row_num, col_num]);
+                            if(selected_letters_indices[selected_letters_indices-1][1]+1 == col_num){
+                                has_selection_started = true;
+                                is_selection_along_row = true;
+                                // push it in the selected letter indices
+                                selected_letters_indices.push([row_num, col_num]);
 
-                            // change the element's color to back
-                            event.target.style.backgroundColor = 'grey';
+                                // change the element's color to back
+                                event.target.style.backgroundColor = 'grey';
+                            }
 
                         } else if (selected_letters_indices[selected_letters_indices.length - 1][1] == col_num) {
-                            has_selection_started = true;
-                            is_selection_along_col = true;
-                            // push it in the selected letter indices
-                            selected_letters_indices.push([row_num, col_num]);
+                            if(selected_letters_indices[selected_letters_indices.length - 1][0]+1 == row_num){
+                                has_selection_started = true;
+                                is_selection_along_col = true;
+                                // push it in the selected letter indices
+                                selected_letters_indices.push([row_num, col_num]);
 
-                            // change the element's color to back
-                            event.target.style.backgroundColor = 'grey';
+                                // change the element's color to back
+                                event.target.style.backgroundColor = 'grey';
+                            }
                         } else {
                             window.alert("Error, User should select the letter in the same row or same column");
 
