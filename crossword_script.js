@@ -4,12 +4,21 @@ window.onload = function() {
     var is_selection_along_row = false;
     // or downward along the column
     var is_selection_along_col = false;
-    var has_selecttion_started = false;
+    var has_selection_started = false;
     var selected_letters_indices = [];
     var correct_words_indices = [];
+    var wrong_words_indices = [];
 
 
     var words = ["GOAT", "DUCK", "CHICK", "HORSE", "PIG", "COW"];
+    var words_indices = {0: [[1,1], [1,2], [1,3], [1,4]],
+                         1: [[9,1], [9,2], [9,3], [9,4]],
+                         2: [[10,4], [10,5], [10,6], [10,7], [10,8]],
+                         3: [[4,7], [5,7], [6,7], [7,7], [8,7]],
+                         4: [[7,2], [7,3], [7,4]],
+                         5: [[5,6], [5,7], [5,8]]
+                        };
+    
     var letters = [['G', 'O', 'A', 'T', 'P' , 'B', 'N', 'C'],
                    ['J', 'K', 'I', 'S', 'Z', 'R', 'M', 'A'],
                    ['E', 'S', 'C', 'O', 'D', 'W', 'H', 'T'],
@@ -66,9 +75,9 @@ window.onload = function() {
                 let col_num = parseInt(event.target.getAttribute('data-col'));
                 
                 
-                if (!has_selecttion_started) {
+                if (!has_selection_started) {
                     // we are selecting our first letter
-                    has_selecttion_started = true;
+                    has_selection_started = true;
                     selected_letters_indices.push([row_num, col_num]);
                     // change the selected element's color to grey
                     event.target.style.backgroundColor = 'grey';
@@ -117,7 +126,7 @@ window.onload = function() {
 
                         // any other selection is invalid
                         if (selected_letters_indices[selected_letters_indices.length - 1][0] == row_num) {
-                            has_selecttion_started = true;
+                            has_selection_started = true;
                             is_selection_along_row = true;
                             // push it in the selected letter indices
                             selected_letters_indices.push([row_num, col_num]);
@@ -126,7 +135,7 @@ window.onload = function() {
                             event.target.style.backgroundColor = 'grey';
 
                         } else if (selected_letters_indices[selected_letters_indices.length - 1][1] == col_num) {
-                            has_selecttion_started = true;
+                            has_selection_started = true;
                             is_selection_along_col = true;
                             // push it in the selected letter indices
                             selected_letters_indices.push([row_num, col_num]);
@@ -143,7 +152,6 @@ window.onload = function() {
                 }
 
             });
-
 
         }
     }
@@ -167,22 +175,36 @@ window.onload = function() {
             
         }
 
-        for(let i = 0; i < correct_words_indices.length ; i++ ){
-            let elem_id = "#row_"+ correct_words_indices[i][0].toString() + "_col_" 
-                                        + correct_words_indices[i][1];
-                
+
+        for(let i = 0; i < wrong_words_indices.length; i++){
+            let elem_id = "#row_"+ wrong_words_indices[i][0].toString() + "_col_" 
+                                        + wrong_words_indices[i][1];
+
             let letter_elem = document.querySelector(elem_id);
-            if(correct_words_indices[i][1] % 2 == 1){
+            if(wrong_words_indices[i][1] % 2 == 1){
                 letter_elem.style.backgroundColor = "lightgreen";
             }else{
                 letter_elem.style.backgroundColor = "gold";
             }
         }
-        
+
+        // show all the animals hidden in the crossword
+        for(let key of Object.keys(words_indices)){
+            for(let i = 0; i < words_indices[key].length; i++){
+                let elem_id = "#row_" + words_indices[key][i][0].toString() + "_col_"
+                                + words_indices[key][i][1].toString();
+                //console.log(elem_id);
+                let letter_elem = document.querySelector(elem_id);
+                letter_elem.style.backgroundColor = "green";
+
+            }
+
+        }
+
         // reset all the state variables
         is_selection_along_col = false;
         is_selection_along_row = false;
-        has_selecttion_started = false;
+        has_selection_started = false;
         selected_letters_indices = [];
         
     });
@@ -194,8 +216,6 @@ window.onload = function() {
         for(let i = 0; i < selected_letters_indices.length; i++){
             selected_word += letters[selected_letters_indices[i][0] - 1][selected_letters_indices[i][1] - 1];
         }
-        //console.log(selected_letters_indices);
-        //console.log(selected_word);
 
         if(selected_word != "" && words.includes(selected_word)){
             // make all selected letters green
@@ -218,7 +238,7 @@ window.onload = function() {
             // reset all the state variables
             is_selection_along_col = false;
             is_selection_along_row = false;
-            has_selecttion_started = false;
+            has_selection_started = false;
             selected_letters_indices = [];
             
         }else{
@@ -230,6 +250,8 @@ window.onload = function() {
                 
                 let letter_elem = document.querySelector(elem_id);
                 letter_elem.style.backgroundColor = 'red';
+                wrong_words_indices.push([selected_letters_indices[i][0], selected_letters_indices[i][1] ]);
+
             }
 
             // show a loser alert box
@@ -237,6 +259,12 @@ window.onload = function() {
                 window.alert("Sorry ! You have selected a wrong word. Click 'Reset' to play again");
             }, 500);
             
+            // allowing selection after error too
+            // reset all the state variables
+            is_selection_along_col = false;
+            is_selection_along_row = false;
+            has_selection_started = false;
+            selected_letters_indices = [];
         }
 
     });
